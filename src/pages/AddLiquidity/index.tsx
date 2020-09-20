@@ -37,6 +37,7 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
+import Input from '../../components/InputUrl'
 
 export default function AddLiquidity({
   match: {
@@ -87,6 +88,9 @@ export default function AddLiquidity({
   const [deadline] = useUserDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
+
+  // referal links
+  const [referalLink, setReferalLink] = useState<string>('')
 
   // get formatted amounts
   const formattedAmounts = {
@@ -324,6 +328,8 @@ export default function AddLiquidity({
             pendingText={pendingText}
           />
           <AutoColumn gap="20px">
+          </AutoColumn>
+          <AutoColumn gap="20px">
             {noLiquidity && (
               <ColumnCenter>
                 <BlueCard>
@@ -341,6 +347,7 @@ export default function AddLiquidity({
                 </BlueCard>
               </ColumnCenter>
             )}
+            <Input type="url" pattern={''} value={referalLink} onChange={setReferalLink} />
             <CurrencyInputPanel
               value={formattedAmounts[Field.CURRENCY_A]}
               onUserInput={onFieldAInput}
