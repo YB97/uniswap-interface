@@ -2,12 +2,10 @@ import styled from 'styled-components'
 
 export const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
-  width: 100%;
-  position: relative;
   font-weight: 500;
+  width: 100%;
+  border: none;
   outline: none;
-  border-radius: 20px;
-  border: 1px solid #FDF5EB;
   flex: 1 1 auto;
   background-color: ${({ theme }) => theme.bg1};
   font-size: ${({ fontSize }) => fontSize ?? '14px'};
@@ -15,7 +13,6 @@ export const StyledInput = styled.input<{ error?: boolean; fontSize?: string; al
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 20px 8px 20px 10px;
   -webkit-appearance: textfield;
 
   ::-webkit-search-decoration {
@@ -34,4 +31,23 @@ export const StyledInput = styled.input<{ error?: boolean; fontSize?: string; al
   ::placeholder {
     color: ${({ theme }) => theme.text4};
   }
+`;
+
+export const StyledWrapper = styled.div<{ error?: boolean }>`
+  width: 100%;
+  border-radius: 20px;
+  padding: 12px 12px 12px 16px;
+  position: relative;
+  border: 1px solid ${({ error }) => (error ? '#E14646' : '#fdf5eb')};
+  &:hover {
+    cursor: text;
+  }
+`
+
+export const StyledLabel = styled.label`
+  display: inline-block;
+  font-weight: 500;
+  font-size: 14px;
+  color: #565A69;
+  margin-bottom: 12px;
 `

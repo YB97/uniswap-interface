@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from '@uniswap/sdk'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useState, useEffect } from 'react'
 import { Plus } from 'react-feather'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
@@ -37,7 +37,7 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
-import Input from '../../components/InputUrl'
+import InputUrl from '../../components/InputUrl'
 
 export default function AddLiquidity({
   match: {
@@ -45,6 +45,11 @@ export default function AddLiquidity({
   },
   history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  useEffect(() => {
+    const reffererLink = window.localStorage.getItem('referrerLink') || '';
+    setReferalLink(reffererLink);
+  }, [])
+
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
@@ -328,8 +333,6 @@ export default function AddLiquidity({
             pendingText={pendingText}
           />
           <AutoColumn gap="20px">
-          </AutoColumn>
-          <AutoColumn gap="20px">
             {noLiquidity && (
               <ColumnCenter>
                 <BlueCard>
@@ -347,7 +350,7 @@ export default function AddLiquidity({
                 </BlueCard>
               </ColumnCenter>
             )}
-            <Input type="url" pattern={''} value={referalLink} onChange={setReferalLink} />
+            <InputUrl title="Referrer" type="url" value={referalLink} onChange={setReferalLink} />
             <CurrencyInputPanel
               value={formattedAmounts[Field.CURRENCY_A]}
               onUserInput={onFieldAInput}
