@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { StyledInput, StyledLabel, StyledWrapper } from './styled'
 
+//eslint-disable-next-line
 const URL_PATTERN = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 interface InputProps {
   value: string | number
