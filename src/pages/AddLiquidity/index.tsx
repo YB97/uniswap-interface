@@ -7,6 +7,7 @@ import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
+import moment from 'moment'
 import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { BlueCard, GreyCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -45,9 +46,15 @@ export default function AddLiquidity({
   },
   history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  const [isPromo, setIsPromo] = useState(false)
   useEffect(() => {
-    const reffererLink = window.localStorage.getItem('referrerLink') || '';
-    setReferalLink(reffererLink);
+    const promoEndDate = moment('2020-09-24')
+      .add(7, 'days')
+      .startOf('day')
+    setIsPromo(moment().isSameOrBefore(promoEndDate))
+
+    const reffererLink = window.localStorage.getItem('referrerLink') || ''
+    setReferalLink(reffererLink)
   }, [])
 
   const { account, chainId, library } = useActiveWeb3React()
@@ -396,6 +403,13 @@ export default function AddLiquidity({
                   </LightCard>
                 </GreyCard>
               </>
+            )}
+
+            {!isPromo && (
+              <Text fontSize="12px" textAlign="center">
+                Clicking means you understand you will pay a 5% staking fee, part of which goes to the Referral Bonus
+                Pool. You will get back 95% of each of the two tokens you staked.
+              </Text>
             )}
 
             {!account ? (
