@@ -7,7 +7,7 @@ import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { BlueCard, GreyCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -46,11 +46,11 @@ export default function AddLiquidity({
   },
   history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  // referal links
+  const [referalLink, setReferalLink] = useState<string>('')
   const [isPromo, setIsPromo] = useState(false)
   useEffect(() => {
-    const promoEndDate = moment('2020-09-24')
-      .add(7, 'days')
-      .startOf('day')
+    const promoEndDate = moment.tz('2020-10-08 14:00', 'America/New_York')
     setIsPromo(moment().isSameOrBefore(promoEndDate))
 
     const reffererLink = window.localStorage.getItem('referrerLink') || ''
@@ -100,9 +100,6 @@ export default function AddLiquidity({
   const [deadline] = useUserDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
-
-  // referal links
-  const [referalLink, setReferalLink] = useState<string>('')
 
   // get formatted amounts
   const formattedAmounts = {
