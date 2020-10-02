@@ -4,7 +4,7 @@ import _Decimal from 'decimal.js-light'
 import _Big, { RoundingMode } from 'big.js'
 import toFormat from 'toformat'
 
-import { BigintIsh, Rounding } from '../../constants'
+import { BigintIsh, Rounding, ZERO } from '../../constants'
 import { ONE } from '../../constants'
 import { parseBigintIsh } from '../../utils'
 
@@ -34,7 +34,7 @@ export class Fraction {
 
   // performs floor division
   public get quotient(): JSBI {
-    return JSBI.divide(this.numerator || 1, this.denominator || 1)
+    return JSBI.equal(this.denominator, ZERO) ? ONE : JSBI.divide(this.numerator, this.denominator)
   }
 
   // remainder after floor division

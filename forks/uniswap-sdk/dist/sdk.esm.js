@@ -549,7 +549,7 @@ var Fraction = /*#__PURE__*/function () {
   _createClass(Fraction, [{
     key: "quotient",
     get: function get() {
-      return JSBI.divide(this.numerator || 1, this.denominator || 1);
+      return JSBI.equal(this.denominator, ZERO) ? ONE : JSBI.divide(this.numerator, this.denominator);
     } // remainder after floor division
 
   }, {
@@ -1524,9 +1524,9 @@ var Fetcher = /*#__PURE__*/function () {
     try {
       var _TOKEN_DECIMALS_CACHE2, _TOKEN_DECIMALS_CACHE3;
 
-      function _temp3(parsedDecimals) {
+      var _temp3 = function _temp3(parsedDecimals) {
         return new Token(chainId, address, parsedDecimals, symbol, name);
-      }
+      };
 
       if (provider === undefined) provider = getDefaultProvider(getNetwork(chainId));
 
