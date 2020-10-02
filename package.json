@@ -82,7 +82,7 @@
     "@walletconnect/web3-provider": "1.1.1-alpha.0"
   },
   "scripts": {
-    "link": "(cd ./forks/uniswap-sdk && yarn link) && yarn link @uniswap/sdk",
+    "link": "(cd ./forks/uniswap-sdk && yarn link) && (cd ../../ && yarn link @uniswap/sdk)",
     "start": "react-scripts start",
     "build": "yarn run link && react-scripts build",
     "test": "react-scripts test --env=jsdom",
