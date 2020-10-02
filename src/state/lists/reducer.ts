@@ -57,8 +57,6 @@ export default createReducer(initialState, builder =>
         loadingRequestId: requestId,
         error: null
       }
-
-      console.log('UNISWAP_DEFAULT_LIST', UNISWAP_DEFAULT_LIST)
     })
     .addCase(fetchTokenList.fulfilled, (state, { payload: { requestId, tokenList, url } }) => {
       const current = state.byUrl[url]?.current
