@@ -99,6 +99,7 @@ export default function RemoveLiquidity({
 
   // pair contract
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
+  console.log('pairContract', pairContract)
 
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
@@ -256,11 +257,12 @@ export default function RemoveLiquidity({
           amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
           account,
-          signatureData.deadline,
-          false,
-          signatureData.v,
-          signatureData.r,
-          signatureData.s
+          deadlineFromNow
+          // signatureData.deadline,
+          // false,
+          // signatureData.v,
+          // signatureData.r,
+          // signatureData.s
         ]
       }
       // removeLiquidityETHWithPermit
@@ -273,11 +275,12 @@ export default function RemoveLiquidity({
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
           account,
-          signatureData.deadline,
-          false,
-          signatureData.v,
-          signatureData.r,
-          signatureData.s
+          deadlineFromNow
+          // signatureData.deadline,
+          // false,
+          // signatureData.v,
+          // signatureData.r,
+          // signatureData.s
         ]
       }
     } else {
