@@ -99,7 +99,6 @@ export default function RemoveLiquidity({
 
   // pair contract
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
-  console.log('pairContract', pairContract)
 
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
@@ -120,7 +119,7 @@ export default function RemoveLiquidity({
       { name: 'verifyingContract', type: 'address' }
     ]
     const domain = {
-      name: 'chkn',
+      name: 'CHKN.farm LP Token',
       version: '1',
       chainId: chainId,
       verifyingContract: pair.liquidityToken.address
@@ -247,7 +246,7 @@ export default function RemoveLiquidity({
       // removeLiquidityETHWithPermit
       if (oneCurrencyIsETH) {
         methodNames = [
-          'removeLiquidityETH',
+          // 'removeLiquidityETH',
           'removeLiquidityETHWithPermit',
           'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens'
         ]
@@ -257,17 +256,16 @@ export default function RemoveLiquidity({
           amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
           account,
-          deadlineFromNow
-          // signatureData.deadline,
-          // false,
-          // signatureData.v,
-          // signatureData.r,
-          // signatureData.s
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s
         ]
       }
       // removeLiquidityETHWithPermit
       else {
-        methodNames = ['removeLiquidity', 'removeLiquidityWithPermit']
+        methodNames = ['removeLiquidityWithPermit']
         args = [
           tokenA.address,
           tokenB.address,
@@ -275,12 +273,11 @@ export default function RemoveLiquidity({
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
           account,
-          deadlineFromNow
-          // signatureData.deadline,
-          // false,
-          // signatureData.v,
-          // signatureData.r,
-          // signatureData.s
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s
         ]
       }
     } else {
@@ -289,8 +286,7 @@ export default function RemoveLiquidity({
 
     // const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
     //   methodNames.map(methodName =>
-    //     router.estimateGas[methodName]
-    //       ( ...args )
+    //     router.estimateGas[methodName](...args)
     //       .then(calculateGasMargin)
     //       .catch(error => {
     //         console.error(`estimateGas failed`, methodName, args, error)
