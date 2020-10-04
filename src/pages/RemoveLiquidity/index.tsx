@@ -67,7 +67,6 @@ export default function RemoveLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  console.log('currencyA', currencyA, currencyB)
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
@@ -246,7 +245,11 @@ export default function RemoveLiquidity({
     else if (signatureData !== null) {
       // removeLiquidityETHWithPermit
       if (oneCurrencyIsETH) {
-        methodNames = ['removeLiquidityETHWithPermit', 'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens']
+        methodNames = [
+          'removeLiquidityETH',
+          'removeLiquidityETHWithPermit',
+          'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens'
+        ]
         args = [
           currencyBIsETH ? tokenA.address : tokenB.address,
           liquidityAmount.raw.toString(),
@@ -262,7 +265,7 @@ export default function RemoveLiquidity({
       }
       // removeLiquidityETHWithPermit
       else {
-        methodNames = ['removeLiquidityWithPermit']
+        methodNames = ['removeLiquidity', 'removeLiquidityWithPermit']
         args = [
           tokenA.address,
           tokenB.address,
