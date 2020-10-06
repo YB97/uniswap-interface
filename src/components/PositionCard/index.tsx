@@ -1,4 +1,5 @@
 import { JSBI, Pair, Percent } from '@uniswap/sdk'
+import { getAddress } from 'ethers/lib/utils'
 import { darken } from 'polished'
 import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
@@ -154,7 +155,28 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
       : [undefined, undefined]
 
   const isMigratedPair =
-    currency0.symbol === 'CHKN' && currency1.symbol && ['ETH', 'USDT', 'SUSHI', 'UNI'].includes(currency1.symbol)
+    pair.token0.address === '0x1421952CB28739568DA9f8433B5f3634899781e6' &&
+    [
+      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      getAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
+      getAddress('0x6b3595068778dd592e39a122f4f5a5cf09c90fe2'),
+      getAddress('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984')
+    ].includes(pair.token1.address)
+  // const isMigrated =
+  //   currency0.symbol === 'CHKN' && currency1.symbol && ['ETH', 'USDT', 'SUSHI', 'UNI'].includes(currency1.symbol)
+  // console.log(
+  //   'isMigratedPair',
+  //   isMigratedPair,
+  //   isMigrated,
+  //   pair.token0.address === '0x1421952CB28739568DA9f8433B5f3634899781e6',
+  //   [
+  //     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  //     '0xdac17f958d2ee523a2206206994597c13d831ec7',
+  //     '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+  //     '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'
+  //   ].includes(pair.token1.address),
+  //   pair.token1.address
+  // )
 
   return (
     <HoverCard border={border}>
@@ -256,7 +278,12 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
           </AutoColumn>
         )}
       </AutoColumn>
-      <MigrateModal isOpen={isMigrateModalOpen} onDismiss={() => setIsMigrateModalOpen(false)} />
+      <MigrateModal
+        isOpen={isMigrateModalOpen}
+        onDismiss={() => setIsMigrateModalOpen(false)}
+        userPoolBalance={userPoolBalance}
+        pair={pair}
+      />
     </HoverCard>
   )
 }

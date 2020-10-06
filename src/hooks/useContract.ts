@@ -5,6 +5,7 @@ import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
+import TOKEN_MIGRATOR_LEGACY_ABI from '../constants/abis/FLPTokenMigratorLegacy.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
@@ -92,4 +93,8 @@ export function useSocksController(): Contract | null {
     UNISOCKS_ABI,
     false
   )
+}
+
+export function useMigratorContract(): Contract | null {
+  return useContract('0xf189F573493B9b0DA0388BdB99b89eb7607B77DE', TOKEN_MIGRATOR_LEGACY_ABI, false)
 }

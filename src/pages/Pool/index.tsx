@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import {
-  // ChainId,
   Pair
+  // ChainId,
   // Token
 } from '@uniswap/sdk'
 import { Link } from 'react-router-dom'
@@ -59,11 +59,15 @@ export default function Pool() {
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
   // const allV2PairsWithLiquidity = [
   //   {
-  //     token1: new Token(ChainId.MAINNET, '0xD46bA6D942050d489DBd938a2C909A5d5039A161', 18, 'AMPL', 'AMPL'),
+  //     token1: new Token(ChainId.MAINNET, '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', 18, 'UNI', 'UNI'),
   //     token0: new Token(ChainId.MAINNET, '0x1421952CB28739568DA9f8433B5f3634899781e6', 18, 'CHKN', 'ChickenSwap'),
-  //     liquidityToken: {
-  //       address: '1'
-  //     }
+  //     liquidityToken: new Token(
+  //       ChainId.MAINNET,
+  //       '0xa47F5cCa0942c33545e6D000E038F18b89310cb2',
+  //       18,
+  //       'Chkn LP Token',
+  //       'UNI-V2'
+  //     )
   //   }
   // ] as any[]
 
