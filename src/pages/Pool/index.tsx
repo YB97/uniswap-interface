@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
-import { Pair } from '@uniswap/sdk'
+import {
+  // ChainId,
+  Pair
+  // Token
+} from '@uniswap/sdk'
 import { Link } from 'react-router-dom'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 
@@ -53,6 +57,15 @@ export default function Pool() {
     fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some(V2Pair => !V2Pair)
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
+  // const allV2PairsWithLiquidity = [
+  //   {
+  //     token1: new Token(ChainId.MAINNET, '0xD46bA6D942050d489DBd938a2C909A5d5039A161', 18, 'AMPL', 'AMPL'),
+  //     token0: new Token(ChainId.MAINNET, '0x1421952CB28739568DA9f8433B5f3634899781e6', 18, 'CHKN', 'ChickenSwap'),
+  //     liquidityToken: {
+  //       address: '1'
+  //     }
+  //   }
+  // ] as any[]
 
   const hasV1Liquidity = useUserHasLiquidityInAllTokens()
 

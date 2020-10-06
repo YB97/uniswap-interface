@@ -18,6 +18,7 @@ import Card, { GreyCard } from '../Card'
 import { AutoColumn } from '../Column'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
+import MigrateModal from '../MigrateModal'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
 
@@ -125,6 +126,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 
 export default function FullPositionCard({ pair, border }: PositionCardProps) {
   const { account } = useActiveWeb3React()
+  const [isMigrateModalOpen, setIsMigrateModalOpen] = useState(false)
 
   const currency0 = unwrappedToken(pair.token0)
   const currency1 = unwrappedToken(pair.token1)
@@ -150,6 +152,9 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
           pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
         ]
       : [undefined, undefined]
+
+  const isMigratedPair =
+    currency0.symbol === 'CHKN' && currency1.symbol && ['ETH', 'USDT', 'SUSHI', 'UNI'].includes(currency1.symbol)
 
   return (
     <HoverCard border={border}>
@@ -229,16 +234,29 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
               </ExternalLink>
             </AutoRow>
             <RowBetween marginTop="10px">
-              <ButtonSecondary as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} width="48%">
-                Add
-              </ButtonSecondary>
-              <ButtonSecondary as={Link} width="48%" to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                Remove
-              </ButtonSecondary>
+              {isMigratedPair ? (
+                <ButtonSecondary width="100%" onClick={() => setIsMigrateModalOpen(true)}>
+                  Migrate
+                </ButtonSecondary>
+              ) : (
+                <>
+                  <ButtonSecondary as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} width="48%">
+                    Add
+                  </ButtonSecondary>
+                  <ButtonSecondary
+                    as={Link}
+                    width="48%"
+                    to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
+                  >
+                    Remove
+                  </ButtonSecondary>
+                </>
+              )}
             </RowBetween>
           </AutoColumn>
         )}
       </AutoColumn>
+      <MigrateModal isOpen={isMigrateModalOpen} onDismiss={() => setIsMigrateModalOpen(false)} />
     </HoverCard>
   )
 }

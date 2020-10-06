@@ -156,6 +156,28 @@ export const ButtonPink = styled(Base)`
   }
 `
 
+export const ButtonRed = styled(Base)`
+  background-color: #f82d3a;
+  color: white;
+
+  &:focus {
+    box-shadow: 0 0 0 1pt darken(0.05, #f82d3a);
+    background-color: darken(0.05, #f82d3a);
+  }
+  &:hover {
+    background-color: darken(0.05, #f82d3a);
+  }
+  &:active {
+    box-shadow: 0 0 0 1pt darken(0.1, #f82d3a);
+    background-color: darken(0.1, #f82d3a);
+  }
+  &:disabled {
+    background-color: #f82d3a;
+    opacity: 50%;
+    cursor: auto;
+  }
+`
+
 export const ButtonOutlined = styled(Base)`
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: transparent;
