@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
@@ -58,16 +58,6 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-  useEffect(() => {
-    const simpleListStringified = localStorage.getItem('redux_localstorage_simple_lists')
-    if (simpleListStringified) {
-      const simpleList = JSON.parse(simpleListStringified)
-      const tokens: any[] = simpleList?.byUrl[`${window.location.origin}/tokens.json`]?.current?.tokens
-      const oldToken = tokens.find((token: any) => token?.address === '0x1421952CB28739568DA9f8433B5f3634899781e6')
-      oldToken && localStorage.removeItem('redux_localstorage_simple_lists')
-    }
-  }, [])
-
   return (
     <Suspense fallback={null}>
       <HashRouter>
