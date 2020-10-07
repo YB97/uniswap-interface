@@ -1,27 +1,24 @@
 import React, { useState } from 'react'
-import { Pair } from '@uniswap/sdk'
+import { Pair, TokenAmount } from '@uniswap/sdk'
+import { TransactionResponse } from '@ethersproject/providers'
 // import { splitSignature } from '@ethersproject/bytes'
-// import { Contract } from '@ethersproject/contracts'
+import { Contract } from '@ethersproject/contracts'
 import { Text } from 'rebass'
 
 // import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
-import {
-  useMigratorContract
-  // usePairContract
-} from '../../hooks/useContract'
+import { useMigratorContract, usePairContract } from '../../hooks/useContract'
 // import { useDerivedBurnInfo } from '../../state/burn/hooks'
 // import {
 //   ApprovalState
 //   useApproveCallback
 // } from '../../hooks/useApproveCallback'
-import {
-  // ButtonPink,
-  ButtonRed
-} from '../Button'
+import { ButtonPink, ButtonRed } from '../Button'
 import Modal from '../Modal'
-// import { Field } from '../../state/burn/actions'
-// import { useCurrency } from '../../hooks/Tokens'
+import { useDerivedBurnInfo } from '../../state/burn/hooks'
+import { useCurrency } from '../../hooks/Tokens'
+import { Field } from '../../state/burn/actions'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 // import { useUserDeadline } from '../../state/user/hooks'
 
 interface Props {
@@ -37,14 +34,20 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
     account
     // chainId, library
   } = useActiveWeb3React()
+  console.log('userPoolBalance', userPoolBalance)
 
+  const [isApproved, setIsApproved] = useState(false)
   const [error, setError] = useState<string | undefined>()
+  const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
   // const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
-  // const { parsedAmounts } = useDerivedBurnInfo(
-  //   useCurrency(pair.token0.address) ?? undefined,
-  //   useCurrency(pair.token1.address) ?? undefined
-  // )
+  const { parsedAmounts } = useDerivedBurnInfo(
+    useCurrency(pair.token0.address) ?? undefined,
+    useCurrency(pair.token1.address) ?? undefined
+  )
 
+  const amountToApprove = parsedAmounts[Field.LIQUIDITY]
+  const addTransaction = useTransactionAdder()
+  const token = amountToApprove instanceof TokenAmount ? amountToApprove?.token : undefined
   // const [deadline] = useUserDeadline()
   // const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   // const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
@@ -116,6 +119,44 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
   //     })
   // }
 
+  const approve = () => {
+    if (!account) {
+      setError('No account')
+      console.error('No account', account)
+      return
+    }
+
+    if (!amountToApprove) {
+      setError('No amount')
+      console.error('No amount', amountToApprove)
+      return
+    }
+
+    if (!token) {
+      setError('No token')
+      console.error('No token', token)
+      return
+    }
+
+    return pairContract
+      ?.approve(account, amountToApprove?.raw.toString(), {
+        gasLimit: 3000000
+      })
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Approve ' + amountToApprove?.currency.symbol,
+          approval: { tokenAddress: token.address, spender: account }
+        })
+      })
+      .then(() => {
+        setIsApproved(true)
+      })
+      .catch((error: Error) => {
+        console.debug('Failed to approve token', error)
+        throw error
+      })
+  }
+
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxWidth={600}>
       <div style={{ padding: '50px' }}>
@@ -124,23 +165,34 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
           CHKN-USDT, CHKN-SUSHI, and CHKN-UNI need to to be migrated in order to be used to staked as Eggs to earn CHKN.
           You will receive the same amount of new Egg FLP tokens when you migrate each. Migrate now.
         </Text>
-        {/* <ButtonPink onClick={onAttemptToApprove}>Approve</ButtonPink> */}
-        <ButtonRed
-          // disabled={approval !== ApprovalState.APPROVED}
-          onClick={async () => {
-            try {
-              await migrateContract?.migrate.call(userPoolBalance, pair.token0.address, pair.token1.address, account)
-              onDismiss()
-              setError('')
-            } catch (err) {
-              setError('Error on the page. Please try again later')
-              console.error(err)
-            }
-          }}
-        >
-          Migrate
-        </ButtonRed>
-        {error && <div>Error: {error}</div>}
+        <div style={{ display: 'flex', marginTop: '15px' }}>
+          <ButtonPink onClick={approve} disabled={isApproved}>
+            Approve
+          </ButtonPink>
+          <ButtonRed
+            style={{ marginLeft: '10px' }}
+            disabled={!isApproved}
+            onClick={async () => {
+              try {
+                setError('')
+                await migrateContract?.migrate.call(
+                  amountToApprove?.raw.toString(),
+                  pair.token0.address,
+                  pair.token1.address,
+                  account
+                )
+                onDismiss()
+                setError('')
+              } catch (err) {
+                setError('Error on the page. Please try again later')
+                console.error(err)
+              }
+            }}
+          >
+            Migrate
+          </ButtonRed>
+        </div>
+        {error && <div style={{ marginTop: '10px' }}>Error: {error}</div>}
       </div>
     </Modal>
   )
