@@ -96,5 +96,5 @@ export function useSocksController(): Contract | null {
 }
 
 export function useMigratorContract(): Contract | null {
-  return useContract('0xf189F573493B9b0DA0388BdB99b89eb7607B77DE', TOKEN_MIGRATOR_LEGACY_ABI, true)
+  return useContract('0xc63f7f5F2109DFb017F565E4D0d61c579b63d193', TOKEN_MIGRATOR_LEGACY_ABI, true)
 }
