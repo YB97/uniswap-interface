@@ -143,7 +143,7 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
     }
 
     return pairContract
-      ?.approve(migrateContract, amountToApprove?.raw.toString(), {
+      ?.approve(migrateContract?.address, amountToApprove?.raw.toString(), {
         gasLimit: 3000000
       })
       .then((response: TransactionResponse) => {
