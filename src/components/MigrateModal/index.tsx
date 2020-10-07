@@ -118,7 +118,7 @@ const MigrateModal = ({ isOpen, onDismiss, pair }: Props) => {
                     outPair?.liquidityToken.address,
                     account,
                     {
-                      gasLimit: 100000
+                      gasLimit: 3000000
                     }
                   )
                   .then((response: TransactionResponse) => {
