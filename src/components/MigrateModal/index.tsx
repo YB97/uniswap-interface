@@ -76,7 +76,7 @@ const MigrateModal = ({ isOpen, onDismiss, pair }: Props) => {
 
     return pairContract
       ?.approve(migrateContract?.address, amountToApprove?.raw.toString(), {
-        gasLimit: 3000000
+        gasLimit: 100000
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
@@ -116,17 +116,20 @@ const MigrateModal = ({ isOpen, onDismiss, pair }: Props) => {
                     amountToApprove?.raw.toString(),
                     pair?.liquidityToken?.address,
                     outPair?.liquidityToken.address,
-                    account
+                    account,
+                    {
+                      gasLimit: 100000
+                    }
                   )
                   .then((response: TransactionResponse) => {
-                    addTransaction(response, {
-                      summary: 'Approve ' + amountToApprove?.currency.symbol
-                    })
-
                     ReactGA.event({
                       category: 'Migration',
                       action: 'Migration',
                       label: 'migration'
+                    })
+                    addTransaction(response, {
+                      summary: 'Approve ' + amountToApprove?.currency.symbol
+                      // approval: { tokenAddress: pair?.liquidityToken?.address, spender: migrateContract.address }
                     })
                   })
                 onDismiss()
