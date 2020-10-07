@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pair, TokenAmount } from '@uniswap/sdk'
+import { Pair, TokenAmount, Percent } from '@uniswap/sdk'
 import { TransactionResponse } from '@ethersproject/providers'
 // import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
@@ -17,8 +17,9 @@ import { ButtonPink, ButtonRed } from '../Button'
 import Modal from '../Modal'
 import { useDerivedBurnInfo } from '../../state/burn/hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import { Field } from '../../state/burn/actions'
+// import { Field } from '../../state/burn/actions'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useTokenBalances } from '../../state/wallet/hooks'
 // import { useUserDeadline } from '../../state/user/hooks'
 
 interface Props {
@@ -34,7 +35,6 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
     account
     // chainId, library
   } = useActiveWeb3React()
-  console.log('userPoolBalance', userPoolBalance)
 
   const [isApproved, setIsApproved] = useState(false)
   const [error, setError] = useState<string | undefined>()
@@ -44,8 +44,12 @@ const MigrateModal = ({ isOpen, onDismiss, userPoolBalance, pair }: Props) => {
     useCurrency(pair.token0.address) ?? undefined,
     useCurrency(pair.token1.address) ?? undefined
   )
-
-  const amountToApprove = parsedAmounts[Field.LIQUIDITY]
+  console.log('parsedAmounts', parsedAmounts, userPoolBalance)
+  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
+  const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
+  const amountToApprove = userLiquidity
+    ? new TokenAmount(userLiquidity.token, new Percent('100').multiply(userLiquidity.raw).quotient)
+    : undefined
   const addTransaction = useTransactionAdder()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove?.token : undefined
   // const [deadline] = useUserDeadline()
