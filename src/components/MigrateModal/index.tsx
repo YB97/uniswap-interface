@@ -31,7 +31,7 @@ const MigrateModal = ({ isOpen, onDismiss, pair }: Props) => {
   const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
   const amountToApprove = userLiquidity
-    ? new TokenAmount(userLiquidity.token, new Percent('100').multiply(userLiquidity.raw).quotient)
+    ? new TokenAmount(userLiquidity.token, new Percent('1').multiply(userLiquidity.raw).quotient)
     : undefined
   const addTransaction = useTransactionAdder()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove?.token : undefined
