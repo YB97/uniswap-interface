@@ -39,7 +39,6 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import InputUrl from '../../components/InputUrl'
-import qs from 'qs'
 
 export default function AddLiquidity({
   match: {
@@ -49,34 +48,35 @@ export default function AddLiquidity({
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   // referal links
   const [referalLink, setReferalLink] = useState<string>('')
-  const [isPromo, setIsPromo] = useState(false)
+  // const [isPromo, setIsPromo] = useState(false)
 
-  const getReferrerAddr = (link: string): any => {
-    console.log('link', link)
-    try {
-      if (!link) {
-        return
-      }
+  // const getReferrerAddr = (link: string): any => {
+  //   try {
+  //     if (!link) {
+  //       return
+  //     }
 
-      const url = new URL(link)
-      const res = qs.parse(url.search, { ignoreQueryPrefix: true })
+  //     const url = new URL(link)
+  //     const res = qs.parse(url.search, { ignoreQueryPrefix: true })
 
-      return res ? res['referrer'] : undefined
-    } catch (err) {
-      console.error('err', err)
-    }
-  }
+  //     return res ? res['referrer'] : undefined
+  //   } catch (err) {
+  //     console.error('err', err)
+  //   }
+  // }
 
   useEffect(() => {
     // const promoEndDate = moment.tz('2020-10-08 14:00', 'America/New_York')
     // setIsPromo(moment().isSameOrBefore(promoEndDate))
-    setIsPromo(false)
+    // setIsPromo(false)
 
     const reffererLink = window.localStorage.getItem('referrerLink') || ''
     setReferalLink(reffererLink)
 
-    const res = getReferrerAddr(reffererLink)
-    console.log('!!!res', res)
+    console.log('reffererLink', reffererLink)
+
+    // const res = getReferrerAddr(reffererLink)
+    // console.log('!!!res', res)
   }, [])
 
   const { account, chainId, library } = useActiveWeb3React()
@@ -172,7 +172,7 @@ export default function AddLiquidity({
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
-    const referrerAddr = getReferrerAddr(referalLink)
+    // const referrerAddr = getReferrerAddr(referalLink)
     // let estimate,
     let method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
@@ -181,15 +181,15 @@ export default function AddLiquidity({
       const tokenBIsETH = currencyB === ETHER
       // estimate = router.estimateGas.addLiquidityETH
 
-      method = referrerAddr ? router.addLiquidityETHWithReferrer : router.addLiquidityETH
-      args = referrerAddr
+      method = referalLink ? router.addLiquidityETHWithReferrer : router.addLiquidityETH
+      args = referalLink
         ? [
             wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
             (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
             amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
             amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
             account,
-            '0x' + referrerAddr,
+            '0x' + referalLink,
             deadlineFromNow
           ]
         : [
@@ -203,8 +203,8 @@ export default function AddLiquidity({
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
       // estimate = router.estimateGas.addLiquidity
-      method = referrerAddr ? router.addLiquidityWithReferrer : router.addLiquidity
-      args = referrerAddr
+      method = referalLink ? router.addLiquidityWithReferrer : router.addLiquidity
+      args = referalLink
         ? [
             wrappedCurrency(currencyA, chainId)?.address ?? '',
             wrappedCurrency(currencyB, chainId)?.address ?? '',
@@ -213,7 +213,7 @@ export default function AddLiquidity({
             amountsMin[Field.CURRENCY_A].toString(),
             amountsMin[Field.CURRENCY_B].toString(),
             account,
-            '0x' + referrerAddr, // referral addr
+            '0x' + referalLink, // referral addr
             deadlineFromNow
           ]
         : [
@@ -488,12 +488,12 @@ export default function AddLiquidity({
               </>
             )}
 
-            {!isPromo && (
+            {/* {!isPromo && (
               <Text fontSize="12px" textAlign="center">
                 Clicking means you understand you will pay a 5% staking fee, part of which goes to the Referral Bonus
                 Pool. You will get back 95% of each of the two tokens you staked.
               </Text>
-            )}
+            )} */}
 
             {!account ? (
               <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>

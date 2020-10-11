@@ -1,5 +1,6 @@
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
+import qs from 'qs'
 import React, { StrictMode } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactDOM from 'react-dom'
@@ -34,7 +35,12 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
 }
 
 if (window.location.href.indexOf('/pool?referrer=') !== -1) {
-  window.localStorage.setItem('referrerLink', window.location.href)
+  const url = new URL(window.location.href)
+  const urlHash = new URL(window.location.origin + url.hash.slice(1))
+
+  const res: any = qs.parse(urlHash.search, { ignoreQueryPrefix: true })
+
+  window.localStorage.setItem('referrerLink', res ? res['referrer'] : '')
 }
 
 window.addEventListener('error', error => {

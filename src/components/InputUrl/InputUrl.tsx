@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react'
 import { StyledInput, StyledLabel, StyledWrapper } from './styled'
 
 //eslint-disable-next-line
-const expression = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/
-const URL_PATTERN = new RegExp(expression)
+// const expression = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/
+// const URL_PATTERN = new RegExp(expression)
 interface InputProps {
   value: string | number
   type: string
@@ -26,7 +26,8 @@ const InputUrl = ({
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     const nextValue = e.currentTarget.value.trim()
 
-    setIsGoodUrl(URL_PATTERN.test(nextValue) && nextValue.indexOf('/pool?referrer=') !== -1 && nextValue !== '')
+    setIsGoodUrl(true)
+    // setIsGoodUrl(URL_PATTERN.test(nextValue) && nextValue.indexOf('/pool?referrer=') !== -1 && nextValue !== '')
     onChange(nextValue)
   }
   const onClick = () => {
