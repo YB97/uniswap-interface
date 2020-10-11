@@ -33,9 +33,8 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   ReactGA.initialize('test', { testMode: true, debug: true })
 }
 
-
-if(window.location.href.indexOf('/pool?referrer=') !== -1) {
-  window.localStorage.setItem('referrerLink', window.location.href);
+if (window.location.href.indexOf('/pool?referrer=') !== -1) {
+  window.localStorage.setItem('referrerLink', window.location.href)
 }
 
 window.addEventListener('error', error => {

@@ -7,7 +7,7 @@ import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import moment from 'moment-timezone'
+// import moment from 'moment-timezone'
 import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { BlueCard, GreyCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -39,6 +39,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import InputUrl from '../../components/InputUrl'
+import qs from 'qs'
 
 export default function AddLiquidity({
   match: {
@@ -49,12 +50,24 @@ export default function AddLiquidity({
   // referal links
   const [referalLink, setReferalLink] = useState<string>('')
   const [isPromo, setIsPromo] = useState(false)
+
+  const getReferrerAddr = (link: string) => {
+    const url = new URL(link)
+    const res = qs.parse(url.search)
+
+    return res ? res['?referrer'] : undefined
+  }
+
   useEffect(() => {
-    const promoEndDate = moment.tz('2020-10-08 14:00', 'America/New_York')
-    setIsPromo(moment().isSameOrBefore(promoEndDate))
+    // const promoEndDate = moment.tz('2020-10-08 14:00', 'America/New_York')
+    // setIsPromo(moment().isSameOrBefore(promoEndDate))
+    setIsPromo(false)
 
     const reffererLink = window.localStorage.getItem('referrerLink') || ''
     setReferalLink(reffererLink)
+
+    const res = getReferrerAddr(reffererLink)
+    console.log('!!!res', res)
   }, [])
 
   const { account, chainId, library } = useActiveWeb3React()
@@ -150,6 +163,7 @@ export default function AddLiquidity({
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
+    const referrerAddr = getReferrerAddr(referalLink)
     // let estimate,
     let method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
@@ -157,29 +171,52 @@ export default function AddLiquidity({
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       // estimate = router.estimateGas.addLiquidityETH
-      method = router.addLiquidityETH
-      args = [
-        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadlineFromNow
-      ]
+
+      method = referrerAddr ? router.addLiquidityETHWithReferrer : router.addLiquidityETH
+      args = referrerAddr
+        ? [
+            wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+            (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+            amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+            amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+            account,
+            '0x' + referrerAddr,
+            deadlineFromNow
+          ]
+        : [
+            wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+            (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+            amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+            amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+            account,
+            deadlineFromNow
+          ]
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
       // estimate = router.estimateGas.addLiquidity
-      method = router.addLiquidity
-      args = [
-        wrappedCurrency(currencyA, chainId)?.address ?? '',
-        wrappedCurrency(currencyB, chainId)?.address ?? '',
-        parsedAmountA.raw.toString(),
-        parsedAmountB.raw.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
-        account,
-        deadlineFromNow
-      ]
+      method = referrerAddr ? router.addLiquidityWithReferrer : router.addLiquidity
+      args = referrerAddr
+        ? [
+            wrappedCurrency(currencyA, chainId)?.address ?? '',
+            wrappedCurrency(currencyB, chainId)?.address ?? '',
+            parsedAmountA.raw.toString(),
+            parsedAmountB.raw.toString(),
+            amountsMin[Field.CURRENCY_A].toString(),
+            amountsMin[Field.CURRENCY_B].toString(),
+            account,
+            '0x' + referrerAddr, // referral addr
+            deadlineFromNow
+          ]
+        : [
+            wrappedCurrency(currencyA, chainId)?.address ?? '',
+            wrappedCurrency(currencyB, chainId)?.address ?? '',
+            parsedAmountA.raw.toString(),
+            parsedAmountB.raw.toString(),
+            amountsMin[Field.CURRENCY_A].toString(),
+            amountsMin[Field.CURRENCY_B].toString(),
+            account,
+            deadlineFromNow
+          ]
       value = null
     }
 
