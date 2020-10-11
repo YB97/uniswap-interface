@@ -51,11 +51,16 @@ export default function AddLiquidity({
   const [referalLink, setReferalLink] = useState<string>('')
   const [isPromo, setIsPromo] = useState(false)
 
-  const getReferrerAddr = (link: string) => {
-    const url = new URL(link)
-    const res = qs.parse(url.search)
+  const getReferrerAddr = (link: string): any => {
+    console.log('link', link)
+    try {
+      const url = new URL(link)
+      const res = qs.parse(url.search, { ignoreQueryPrefix: true })
 
-    return res ? res['?referrer'] : undefined
+      return res ? res['referrer'] : undefined
+    } catch (err) {
+      console.error('err', err)
+    }
   }
 
   useEffect(() => {
