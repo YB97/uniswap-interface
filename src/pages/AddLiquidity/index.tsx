@@ -54,6 +54,10 @@ export default function AddLiquidity({
   const getReferrerAddr = (link: string): any => {
     console.log('link', link)
     try {
+      if (!link) {
+        return
+      }
+
       const url = new URL(link)
       const res = qs.parse(url.search, { ignoreQueryPrefix: true })
 
