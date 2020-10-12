@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import React, { Suspense } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
 import Popups from '../components/Popups'
+import UpdatingModal from '../components/UpdatingModal'
 import Web3ReactManager from '../components/Web3ReactManager'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
@@ -89,6 +91,7 @@ export default function App() {
               </Switch>
             </Web3ReactManager>
             <Marginer />
+            <UpdatingModal isOpen onDismiss={_.noop} />
           </BodyWrapper>
         </AppWrapper>
       </HashRouter>
