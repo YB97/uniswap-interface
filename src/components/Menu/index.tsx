@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
-import { Info, BookOpen, Code, PieChart } from 'react-feather'
+import { Info, BookOpen, Code, PieChart, Users } from 'react-feather'
 import styled from 'styled-components'
 import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
+import useCopyClipboard from '../../hooks/useCopyClipboard'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useToggle from '../../hooks/useToggle'
 
@@ -49,7 +50,7 @@ const StyledMenu = styled.div`
 `
 
 const MenuFlyout = styled.span`
-  min-width: 8.125rem;
+  min-width: 8.85rem;
   background-color: ${({ theme }) => theme.bg3};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
@@ -77,14 +78,29 @@ const MenuItem = styled(ExternalLink)`
     margin-right: 8px;
   }
 `
+const MenuItemBlock = styled.div`
+  flex: 1;
+  padding: 0.5rem 0.5rem;
+  color: ${({ theme }) => theme.text2};
+  :hover {
+    color: ${({ theme }) => theme.text1};
+    cursor: pointer;
+    text-decoration: none;
+  }
+  > svg {
+    margin-right: 8px;
+  }
+`
 
 const CODE_LINK = 'https://github.com/cdk3/chkn.farm'
 
 export default function Menu() {
   const node = useRef<HTMLDivElement>()
   const [open, toggle] = useToggle(false)
+  const [, setCopied] = useCopyClipboard()
 
   useOnClickOutside(node, open ? toggle : undefined)
+  const reffererLink = window.localStorage.getItem('referrerLink')
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -110,6 +126,13 @@ export default function Menu() {
             <PieChart size={14} />
             Analytics
           </MenuItem>
+          <MenuItemBlock id="referrer" onClick={() => setCopied(reffererLink || '')}>
+            <Users size={14} />
+            {reffererLink || '--'}
+          </MenuItemBlock>
+          {/* <MenuItemBlock id="points">
+            <Target size="14" />
+          </MenuItemBlock> */}
         </MenuFlyout>
       )}
     </StyledMenu>
