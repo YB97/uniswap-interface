@@ -73,7 +73,10 @@ export default function AddLiquidity({
     const reffererLink = window.localStorage.getItem('referrerLink') || ''
     setReferalLink(reffererLink)
 
-    console.log('reffererLink', reffererLink)
+    console.log('reffererLink', reffererLink.padEnd(64, '0'))
+
+    //0x0000000000000000000000000000000000000000000000000000000000000000
+    //3434343400000000000000000000000000000000000000000000000000000000
 
     // const res = getReferrerAddr(reffererLink)
     // console.log('!!!res', res)
@@ -189,7 +192,7 @@ export default function AddLiquidity({
             amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
             amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
             account,
-            '0x' + referalLink,
+            '0x' + referalLink.padEnd(64, '0'),
             deadlineFromNow
           ]
         : [
@@ -213,7 +216,7 @@ export default function AddLiquidity({
             amountsMin[Field.CURRENCY_A].toString(),
             amountsMin[Field.CURRENCY_B].toString(),
             account,
-            '0x' + referalLink, // referral addr
+            '0x' + referalLink.padEnd(64, '0'), // referral addr
             deadlineFromNow
           ]
         : [
