@@ -232,7 +232,7 @@ export default function AddLiquidity({
       value = null
     }
 
-    const gasLimit = noLiquidity ? BigNumber.from(300000) : BigNumber.from(350000)
+    const gasLimit = noLiquidity ? BigNumber.from(3250000) : BigNumber.from(600000)
 
     setAttemptingTxn(true)
 
