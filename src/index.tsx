@@ -39,8 +39,12 @@ if (window.location.href.indexOf('/pool?referrer=') !== -1) {
   const urlHash = new URL(window.location.origin + url.hash.slice(1))
 
   const res: any = qs.parse(urlHash.search, { ignoreQueryPrefix: true })
-
-  window.localStorage.setItem('referrerLink', res ? res['referrer'] : '')
+  const unchangeableReferrer = localStorage.getItem('unchangeableReferrer') || false
+  if (unchangeableReferrer === false) {
+    window.localStorage.setItem('referrerLink', res ? res['referrer'] : '')
+  } else {
+    window.localStorage.setItem('referrerLink', unchangeableReferrer)
+  }
 }
 
 window.addEventListener('error', error => {

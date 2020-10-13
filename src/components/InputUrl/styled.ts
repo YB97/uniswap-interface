@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
   font-weight: 500;
+  cursor: not-allowed;
   width: 100%;
   border: none;
   outline: none;
@@ -31,7 +32,7 @@ export const StyledInput = styled.input<{ error?: boolean; fontSize?: string; al
   ::placeholder {
     color: ${({ theme }) => theme.text4};
   }
-`;
+`
 
 export const StyledWrapper = styled.div<{ error?: boolean }>`
   width: 100%;
@@ -44,10 +45,16 @@ export const StyledWrapper = styled.div<{ error?: boolean }>`
   }
 `
 
-export const StyledLabel = styled.label`
+export const StyledLabel = styled.label<{ disabled?: boolean }>`
   display: inline-block;
   font-weight: 500;
   font-size: 14px;
-  color: #565A69;
+  color: #565a69;
   margin-bottom: 12px;
+
+  ${props =>
+    props.disabled &&
+    css`
+      color: #eeeeee;
+    `}
 `

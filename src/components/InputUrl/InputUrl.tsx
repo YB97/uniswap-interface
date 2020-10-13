@@ -48,6 +48,7 @@ const InputUrl = ({
         autoCorrect="off"
         // text-specific options
         placeholder="Inviter"
+        disabled
         required
         type="url"
         ref={inputEl}

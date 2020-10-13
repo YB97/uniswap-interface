@@ -256,7 +256,11 @@ export default function AddLiquidity({
         })
 
         setTxHash(response.hash)
-
+        const unchangeableReferrer = localStorage.getItem('unchangeableReferrer') || false
+        if (unchangeableReferrer === false) {
+          const referrer = localStorage.getItem('referrerLink') || ''
+          localStorage.setItem('unchangeableReferrer', referrer)
+        }
         ReactGA.event({
           category: 'Liquidity',
           action: 'Add',
