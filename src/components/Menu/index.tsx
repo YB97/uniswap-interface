@@ -1,7 +1,8 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Info, BookOpen, Code, PieChart, Users } from 'react-feather'
 import styled from 'styled-components'
 import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
+import { useActiveWeb3React } from '../../hooks'
 import useCopyClipboard from '../../hooks/useCopyClipboard'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useToggle from '../../hooks/useToggle'
@@ -96,11 +97,19 @@ const CODE_LINK = 'https://github.com/cdk3/chkn.farm'
 
 export default function Menu() {
   const node = useRef<HTMLDivElement>()
+  const [referrerLink, setReferrerLink] = useState('')
   const [open, toggle] = useToggle(false)
+  const { account } = useActiveWeb3React()
   const [, setCopied] = useCopyClipboard()
+  const referrer = window.localStorage.getItem('unch' + account)
 
   useOnClickOutside(node, open ? toggle : undefined)
-  const reffererLink = window.localStorage.getItem('referrerLink')
+  useEffect(() => {
+    if (!account) return
+    const referrerLink = window.localStorage.getItem('unch' + account)
+    if (!referrerLink) return
+    setReferrerLink(referrerLink)
+  }, [account, referrer])
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -126,9 +135,10 @@ export default function Menu() {
             <PieChart size={14} />
             Analytics
           </MenuItem>
-          <MenuItemBlock id="referrer" onClick={() => setCopied(reffererLink || '')}>
+
+          <MenuItemBlock id="referrer" onClick={() => setCopied(referrerLink || '')}>
             <Users size={14} />
-            {reffererLink || '--'}
+            {referrerLink || '--'}
           </MenuItemBlock>
           {/* <MenuItemBlock id="points">
             <Target size="14" />

@@ -48,6 +48,7 @@ export default function AddLiquidity({
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   // referal links
   const [referalLink, setReferalLink] = useState<string>('')
+  const { account, chainId, library } = useActiveWeb3React()
   // const [isPromo, setIsPromo] = useState(false)
 
   // const getReferrerAddr = (link: string): any => {
@@ -66,23 +67,17 @@ export default function AddLiquidity({
   // }
 
   useEffect(() => {
+    if (!account) return
     // const promoEndDate = moment.tz('2020-10-08 14:00', 'America/New_York')
     // setIsPromo(moment().isSameOrBefore(promoEndDate))
     // setIsPromo(false)
 
-    const reffererLink = window.localStorage.getItem('referrerLink') || ''
+    const reffererLink = window.localStorage.getItem(account) || ''
     setReferalLink(reffererLink)
 
     console.log('reffererLink', reffererLink.padEnd(64, '0'))
+  }, [account])
 
-    //0x0000000000000000000000000000000000000000000000000000000000000000
-    //3434343400000000000000000000000000000000000000000000000000000000
-
-    // const res = getReferrerAddr(reffererLink)
-    // console.log('!!!res', res)
-  }, [])
-
-  const { account, chainId, library } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
   const currencyA = useCurrency(currencyIdA)
@@ -256,10 +251,10 @@ export default function AddLiquidity({
         })
 
         setTxHash(response.hash)
-        const unchangeableReferrer = localStorage.getItem('unchangeableReferrer') || false
+        const unchangeableReferrer = localStorage.getItem(`unch${account}`) || false
         if (unchangeableReferrer === false) {
-          const referrer = localStorage.getItem('referrerLink') || ''
-          localStorage.setItem('unchangeableReferrer', referrer)
+          const referrer = localStorage.getItem(account) || ''
+          localStorage.setItem(`unch${account}`, referrer)
         }
         ReactGA.event({
           category: 'Liquidity',

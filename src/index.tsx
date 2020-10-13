@@ -1,6 +1,5 @@
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
-import qs from 'qs'
 import React, { StrictMode } from 'react'
 import { isMobile } from 'react-device-detect'
 import ReactDOM from 'react-dom'
@@ -32,19 +31,6 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   })
 } else {
   ReactGA.initialize('test', { testMode: true, debug: true })
-}
-
-if (window.location.href.indexOf('/pool?referrer=') !== -1) {
-  const url = new URL(window.location.href)
-  const urlHash = new URL(window.location.origin + url.hash.slice(1))
-
-  const res: any = qs.parse(urlHash.search, { ignoreQueryPrefix: true })
-  const unchangeableReferrer = localStorage.getItem('unchangeableReferrer') || false
-  if (unchangeableReferrer === false) {
-    window.localStorage.setItem('referrerLink', res ? res['referrer'] : '')
-  } else {
-    window.localStorage.setItem('referrerLink', unchangeableReferrer)
-  }
 }
 
 window.addEventListener('error', error => {
