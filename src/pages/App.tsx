@@ -76,6 +76,8 @@ export default function App() {
       } else {
         window.localStorage.setItem(account, unchangeableReferrer)
       }
+
+      window.location.assign('/#/add/ETH')
     }
   }, [account])
 
