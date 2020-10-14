@@ -106,8 +106,8 @@ export default function Menu() {
   useOnClickOutside(node, open ? toggle : undefined)
   useEffect(() => {
     if (!account) return
-    const referrerLink = window.localStorage.getItem('unch' + account)
-    if (!referrerLink) return
+    const referrerLink = window.localStorage.getItem('unch' + account) || ''
+
     setReferrerLink(referrerLink)
   }, [account, referrer])
 
