@@ -9,6 +9,7 @@ i18next
   .use(initReactI18next)
   .init({
     backend: {
+      // loadPath: `./locales/zh-CN.json`
       loadPath: `./locales/{{lng}}.json`
     },
     react: {

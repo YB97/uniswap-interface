@@ -1,6 +1,6 @@
 // import _ from 'lodash'
 import React, { Suspense, useEffect } from 'react'
-import qs from 'qs'
+// import qs from 'qs'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
@@ -65,14 +65,17 @@ export default function App() {
   const { account } = useActiveWeb3React()
   useEffect(() => {
     if (!account) return
-    if (window.location.href.indexOf('/pool?referrer=') !== -1) {
+
+    if (window.location.href.indexOf('/#/@') !== -1) {
       const url = new URL(window.location.href)
       const urlHash = new URL(window.location.origin + url.hash.slice(1))
 
-      const res: any = qs.parse(urlHash.search, { ignoreQueryPrefix: true })
+      const res: any = urlHash.pathname.slice(2)
+      console.log('res', res)
+      // const res: any = qs.parse(urlHash.search, { ignoreQueryPrefix: true })
       const unchangeableReferrer = localStorage.getItem('unch' + account) || false
       if (unchangeableReferrer === false) {
-        window.localStorage.setItem(account, res ? res['referrer'] : '')
+        window.localStorage.setItem(account, res || '')
       } else {
         window.localStorage.setItem(account, unchangeableReferrer)
       }
