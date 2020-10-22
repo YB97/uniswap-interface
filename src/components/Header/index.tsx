@@ -135,9 +135,10 @@ const IconWrapper = styled.span`
 `
 
 const AuditText = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   margin-right: 10px;
+  font-family: 'Inter';
 `
 
 const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
@@ -171,9 +172,9 @@ export default function Header() {
                 />
               </TitleText>
             </Title>
-            <HeaderElement>
+            <HeaderElement margin="0 0 0 40px">
               <AuditText>audited by</AuditText>
-              <img src={BeosinLogo} alt="logo" width={100} />
+              <img src={BeosinLogo} alt="logo" width={80} />
             </HeaderElement>
           </HeaderControls>
           <HeaderControls>
