@@ -131,7 +131,7 @@ export default function Menu() {
             <Code size={14} />
             Code
           </MenuItem>
-          <MenuItem id="link" href="https://medium.com/@chknfarm/chkn-farm-fa178c712aed">
+          <MenuItem id="link" href="https://www.analytics.chkn.farm/">
             <PieChart size={14} />
             Analytics
           </MenuItem>

@@ -2,11 +2,13 @@ import { ChainId } from '@uniswap/sdk'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
+import { Home } from 'react-feather'
 
 import styled from 'styled-components'
 
 import Logo from '../../assets/svg/logo.svg'
 import LogoDark from '../../assets/svg/logo_white.svg'
+import BeosinLogo from '../../assets/images/beosin.png'
 import Wordmark from '../../assets/svg/wordmark.svg'
 import WordmarkDark from '../../assets/svg/wordmark_white.svg'
 import { useActiveWeb3React } from '../../hooks'
@@ -19,6 +21,7 @@ import Menu from '../Menu'
 
 import Row, { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
+import { LinkStyledButton } from '../../theme/components'
 // import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
@@ -37,9 +40,10 @@ const HeaderFrame = styled.div`
   `};
 `
 
-const HeaderElement = styled.div`
+const HeaderElement = styled.div<{ margin?: string }>`
   display: flex;
   align-items: center;
+  ${({ margin }) => margin && `margin: ${margin};`}
 `
 
 const HeaderElementWrap = styled.div`
@@ -126,6 +130,16 @@ const BalanceText = styled(Text)`
   `};
 `
 
+const IconWrapper = styled.span`
+  margin-right: 5px;
+`
+
+const AuditText = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 10px;
+`
+
 const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
   [ChainId.MAINNET]: null,
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -141,39 +155,61 @@ export default function Header() {
   const [isDark] = useDarkModeManager()
 
   return (
-    <HeaderFrame>
-      <RowBetween style={{ alignItems: 'flex-start' }} padding="1rem 1rem 0 1rem">
-        <HeaderElement>
-          <Title href=".">
-            <UniIcon>
-              <img src={isDark ? LogoDark : Logo} alt="logo" />
-            </UniIcon>
-            <TitleText>
-              <img style={{ marginLeft: '4px', marginTop: '4px' }} src={isDark ? WordmarkDark : Wordmark} alt="logo" />
-            </TitleText>
-          </Title>
-        </HeaderElement>
-        <HeaderControls>
-          <HeaderElement>
-            <TestnetWrapper>
-              {!isMobile && chainId && NETWORK_LABELS[chainId] && <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>}
-            </TestnetWrapper>
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-              {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  {userEthBalance?.toSignificant(4)} ETH
-                </BalanceText>
-              ) : null}
-              <Web3Status />
-            </AccountElement>
-          </HeaderElement>
-          <HeaderElementWrap>
-            {/* <VersionSwitch /> */}
-            <Settings />
-            <Menu />
-          </HeaderElementWrap>
-        </HeaderControls>
-      </RowBetween>
-    </HeaderFrame>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <HeaderFrame>
+        <RowBetween style={{ alignItems: 'flex-start' }} padding="1rem 1rem 0 1rem">
+          <HeaderControls style={{ flexDirection: 'column', alignItems: 'center' }}>
+            <Title href=".">
+              <UniIcon>
+                <img src={isDark ? LogoDark : Logo} alt="logo" />
+              </UniIcon>
+              <TitleText>
+                <img
+                  style={{ marginLeft: '4px', marginTop: '4px' }}
+                  src={isDark ? WordmarkDark : Wordmark}
+                  alt="logo"
+                />
+              </TitleText>
+            </Title>
+            <HeaderElement>
+              <AuditText>audited by</AuditText>
+              <img src={BeosinLogo} alt="logo" width={100} />
+            </HeaderElement>
+          </HeaderControls>
+          <HeaderControls>
+            <HeaderElement>
+              <LinkStyledButton onClick={() => window.open('https://www.chkn.farm/', '_blank')}>
+                <HeaderElement>
+                  <IconWrapper>
+                    <Home size="16" />
+                  </IconWrapper>
+                  go to chkn.farm
+                </HeaderElement>
+              </LinkStyledButton>
+            </HeaderElement>
+            <HeaderElement>
+              <TestnetWrapper>
+                {!isMobile && chainId && NETWORK_LABELS[chainId] && (
+                  <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>
+                )}
+              </TestnetWrapper>
+              <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+                {account && userEthBalance ? (
+                  <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                    {userEthBalance?.toSignificant(4)} ETH
+                  </BalanceText>
+                ) : null}
+                <Web3Status />
+              </AccountElement>
+            </HeaderElement>
+            <HeaderElementWrap>
+              {/* <VersionSwitch /> */}
+              <Settings />
+              <Menu />
+            </HeaderElementWrap>
+          </HeaderControls>
+        </RowBetween>
+      </HeaderFrame>
+    </div>
   )
 }
