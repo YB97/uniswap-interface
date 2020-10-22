@@ -135,7 +135,7 @@ const IconWrapper = styled.span`
 `
 
 const AuditText = styled.div`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   margin-right: 10px;
   font-family: 'Inter';
@@ -172,7 +172,7 @@ export default function Header() {
                 />
               </TitleText>
             </Title>
-            <HeaderElement margin="0 0 0 40px">
+            <HeaderElement margin="0 0 0 20px">
               <AuditText>audited by</AuditText>
               <img src={BeosinLogo} alt="logo" width={80} />
             </HeaderElement>
